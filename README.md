@@ -1,2 +1,2 @@
 # JS-App
-Junior School Management system. F
+Junior School Management system. 
