@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import morgan from "morgan";
 import cors from "cors";
+import userRoutes from "./routes/userRoutes.js"
 
 const app = express();
 
@@ -26,6 +27,9 @@ app.use(morgan("dev"))
 mongoose.connect(url).then(()=>{
     console.log(`Database connection successful`)
 }).catch((err)=>console.log("Database error is",err));
+
+// Routes are here
+app.use("/api/v1/user",userRoutes)
 
 // Server listen
 app.listen(port, () => {
