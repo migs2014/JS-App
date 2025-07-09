@@ -1,57 +1,40 @@
 import User from "../model/userModel.js";
-export const createUserController = async (req, res) => {
+import { errorHandleMiddleware } from "../middleware/errorHandleMiddleware.js";
+import ErrorHandler from "../middleware/errorMiddleware.js";
+import { jsontoken} from "../utils/token.js";
+
+export const createUserController = errorHandleMiddleware(async (req, res, next) => {
   try {
     const { name, email, password, role, phone, address, dateOfBirth, gender } =
       req.body;
-    //validator
-    if (!name) {
-      return res.send({ message: "Name is Required" });
-    }
-    if (!email) {
-      return res.send({ message: "Email is Required" });
-    }
-    if (!password) {
-      return res.send({ message: "Password is Required" });
-    }
-    if (!phone) {
-      return res.send({ message: "Phone is Required" });
-    }
-    if (!gender) {
-      return res.send({ message: "Gender is Required" });
-    }
-    if (!role) {
-      return res.send({ message: "Role is Required" });
-    }
-    if (!address) {
-      return res.send({ message: "address is Required" });
-    }
-    if (!dateOfBirth) {
-      return res.send({ message: "Date of Birth is Required" });
-    }
-    // Exiting user in database check her
+    // Validator summarized
+    if (!name || !email || !password || !role || !address || !phone || !dateOfBirth || !gender){
+      return isNamedExportBindings(new ErrorHandler("Fill all the fields",400))
+    };
+   // Exiting user in database check here
     const exitingUser = await User.findOne({ email });
     if (exitingUser) {
-      return res.status(200).send({
-        success: false,
-        message: "User already registered, please login",
-      });
+      return next (new ErrorHandler("This email Already Registered",400));
     }
-    const user = await new User({
-        name,
-        email,
-        password,
-        phone,
-        gender,
-        address,
-        role,
-        dateOfBirth,    
-    }).save()
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      phone,
+      gender,
+      address,
+      dateOfBirth,
+    }); 
+
     // response here
-    res.status(201).json({
-        success: true,
-        message: "User created Successfully",
-        user,
-    });
+  //  jsontoken (user, "User Created successfully",201, res);
+  res.status(200).json({
+  success: true,
+  message: "User created successfully",
+  data: user
+});
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -60,4 +43,4 @@ export const createUserController = async (req, res) => {
       error,
     });
   }
-};
+});

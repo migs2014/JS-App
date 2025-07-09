@@ -55,13 +55,19 @@ userSchema.pre("save", async function (next) {
         return next();
     }
 });
+// userSchema.pre("save", async function (next) {
+//     if (!this.isModified("password")) return next();
 
-// compare password , user password and database password
-userSchema.method.comparePassword =  async function (enterPassword){
+//     this.password = await bcrypt.hash(this.password, 10); // You can adjust the salt rounds
+//     next();
+// });
+
+// compare password , user password and database password  //method to methods
+userSchema.methods.comparePassword =  async function (enterPassword){   
     return await bcrypt.compare(enterPassword,this.password)
 }
 //json web token generation
-userSchema.methods.generateJsonWebToken=() => {
+userSchema.methods.generateJsonWebToken = function () {
  return jwt.sign({
     id: this._id,
     role: this.role, //this role for user and help for middleware

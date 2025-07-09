@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import morgan from "morgan";
 import cors from "cors";
-import userRoutes from "./routes/userRoutes.js"
+import userRoutes from "./routes/userRoutes.js";
+import { errorMiddleware } from "./middleware/errorMiddleware.js";
 
 const app = express();
 
@@ -35,3 +36,4 @@ app.use("/api/v1/user",userRoutes)
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
+app.use(errorMiddleware);
