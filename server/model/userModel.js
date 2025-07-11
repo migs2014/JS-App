@@ -55,12 +55,12 @@ userSchema.pre("save", async function (next) {
         return next();
     }
 });
-// userSchema.pre("save", async function (next) {
-//     if (!this.isModified("password")) return next();
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
 
-//     this.password = await bcrypt.hash(this.password, 10); // You can adjust the salt rounds
-//     next();
-// });
+    this.password = await bcrypt.hash(this.password, 10); // You can adjust the salt rounds
+    next();
+});
 
 // compare password , user password and database password  //method to methods
 userSchema.methods.comparePassword =  async function (enterPassword){   

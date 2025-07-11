@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-import ErrorHandler, { errorMiddleware } from "./errorMiddleware";
-import User from "../model/userModel";
+import ErrorHandler from "./errorMiddleware.js";
+import User from "../model/userModel.js";
+import  {errorHandleMiddleware} from "./errorHandleMiddleware.js";
 //This for registered user
 export const isAuthenticated = async (req, res, next) => {
   const token =
@@ -22,9 +23,9 @@ export const isAuthenticated = async (req, res, next) => {
 };
 
 //this for student token
-export const studentToken = errorMiddleware(async (req, res, next) => {
+export const studentToken = errorHandleMiddleware(async (req, res, next) => {
   const token = req.cookies.studentToken;
-  if (token) {
+  if (!token) {
     return next(new ErrorHandler("Student not authenticated", 401));
   }
   try {
@@ -40,9 +41,9 @@ export const studentToken = errorMiddleware(async (req, res, next) => {
 });
 
 // This is teacher token
-export const teacherToken = errorMiddleware(async (req, res, next) => {
+export const teacherToken = errorHandleMiddleware(async (req, res, next) => {
   const token = req.cookies.teacherToken;
-  if (token) {
+  if (!token) {
     return next(new ErrorHandler("Teacher not authenticated", 401));
   }
   try {
@@ -58,9 +59,9 @@ export const teacherToken = errorMiddleware(async (req, res, next) => {
 });
 
 // This is Admin token
-export const adminToken = errorMiddleware(async (req, res, next) => {
-  const token = req.cookies.teacherToken;
-  if (token) {
+export const adminToken = errorHandleMiddleware(async (req, res, next) => {
+  const token = req.cookies.adminToken;
+  if (!token) {
     return next(new ErrorHandler("Admin not authenticated", 401));
   }
   try {
