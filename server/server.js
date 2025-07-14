@@ -11,6 +11,7 @@ import fileUpload from "express-fileupload";
 import cookie from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import classRoutes from "./routes/classRoutes.js"
 // cloudinary set up
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -50,7 +51,7 @@ mongoose
 // Routes are here
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/teacher", teacherRoutes);
-
+app.use("/api/v1/class", classRoutes);
 // Server listen
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
