@@ -8,7 +8,7 @@ export const createTeacherController = errorHandleMiddleware(async(req,res,next)
     try {
         const {userId, subject, department, hireDate,qualification}= req.body;
         if(!userId || !subject || !department || !hireDate ||!qualification){
-            return next (new ErrorHandler("Please provide all required fields"),400);
+            return next (new ErrorHandler("Please provide all required fields",400));
         }
         const teacher = await Teacher.create({
             userId,

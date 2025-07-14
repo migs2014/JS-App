@@ -23,7 +23,7 @@ export const isAuthenticated = async (req, res, next) => {
 };
 
 //this for student token
-export const studentToken = errorHandleMiddleware(async (req, res, next) => {
+export const studentToken = errorHandleMiddleware(async (req, res, next) => {  
   const token = req.cookies.studentToken;
   if (!token) {
     return next(new ErrorHandler("Student not authenticated", 401));
@@ -31,7 +31,7 @@ export const studentToken = errorHandleMiddleware(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = await User.findById(decoded.id);
-    if (!req.user || req.user.role !== "student") {
+    if (!req.user || req.user.role !== "Student") {
       return next(new ErrorHandler("student not Authorized"));
     }
     next();
