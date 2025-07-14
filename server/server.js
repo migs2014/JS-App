@@ -15,6 +15,7 @@ import classRoutes from "./routes/classRoutes.js"
 import studentRoutes from "./routes/studentRoutes.js"
 import attendanceRoutes from "./routes/attendanceRoutes.js"
 import examRoutes from  "./routes/examRoutes.js"
+import feeRoutes from "./routes/feeRoutes.js"
 // cloudinary set up
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -57,7 +58,8 @@ app.use("/api/v1/teacher", teacherRoutes);
 app.use("/api/v1/class", classRoutes);
 app.use("/api/v1/student",studentRoutes);
 app.use("/api/v1/attendance",attendanceRoutes);
-app.use("/api/v1/exam",examRoutes)
+app.use("/api/v1/exam",examRoutes);
+app.use("/api/v1/fee",feeRoutes)
 // Server listen
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
