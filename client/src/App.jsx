@@ -11,7 +11,10 @@ import Policy from "./pages/Policy";
 import About from "./pages/About";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App(){
   return (
     <div>
@@ -26,7 +29,10 @@ function App(){
         <Route path="/terms" element={<Terms />} />
         <Route path="/faq-page" element={<FAQPage />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
+      <ToastContainer position="bottom-right"/>
       <Footer/>
     </div>
   );
