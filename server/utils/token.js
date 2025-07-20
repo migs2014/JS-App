@@ -93,16 +93,20 @@ export const jsontoken = (user, message, statusCode, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
+    // sameSite: "None", // or "None" with secure: true for HTTPS
   };
+  // const cookieOptions = {
+  //   httpOnly: true,
+  //   secure: false, // ✅ Only for local dev
+  //   sameSite: "Lax", // ✅ Works across localhost ports
+  //   expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  // };
 
   // Send response with cookie and JSON payload
-  res
-    .status(statusCode)
-    .cookie(cookieName, token, cookieOptions)
-    .json({
-      success: true,
-      message,
-      user,
-      token,
-    });
+  res.status(statusCode).cookie(cookieName, token, cookieOptions).json({
+    success: true,
+    message,
+    user,
+    token,
+  });
 };

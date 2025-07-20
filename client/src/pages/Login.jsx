@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { Context } from "../main.jsx";
+//  import { Context } from "../main.jsx";
 import { Context } from "../Context.jsx";
 import axios from "axios";
 import { toast } from 'react-toastify';
@@ -21,6 +21,7 @@ const Login = () => {
   const navigate = useNavigate();
   // Accessing context api
   const { setIsAuth, setUser } = useContext(Context);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();

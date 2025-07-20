@@ -26,9 +26,9 @@ cloudinary.v2.config({
 });
 //All port from dotenv
 const port = process.env.PORT || 6060;
-const url = process.env.MONGO_URL;
+// const url = process.env.MONGO_URL;
 // URI FOR CLOUD
-// const url = process.env.MONGO_URI_PRODUCTION;
+ const url = process.env.MONGO_URI_PRODUCTION;
 
 //Middleware
 app.use(

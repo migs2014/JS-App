@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PageNotFound from "./pages/PageNotFound";
@@ -13,12 +13,60 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-function App(){
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+// import { Context } from "./main.jsx";
+import { Context } from "./Context.jsx";
+import axios from "axios";
+function App() {
+  const { setIsAuth, setUser } = useContext(Context);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { 
+    const fetchUserProfile = async () => {
+      try {
+        const { data } = await axios.get("", { withCredentials: true });
+        if (data?.user) {
+          setIsAuth(true);
+          setUser(data.user);
+          let profileUrl = "http://localhost:3030/api/v1/user/me";
+          if (data.user.role === "Student") {
+            profileUrl = "http://localhost:3030/api/v1/student/student-profile";
+          } else if (data.user.role === "Teacher") {
+            profileUrl = "http://localhost:3030/api/v1/teacher/teacher-profile";
+          } else if (data.user.role === "Admin") {
+            profileUrl = "http://localhost:5000/api/v1/user/admin-profile";
+          }
+          if(profileUrl){
+            const profilesRes= await axios.get(profileUrl,{
+              withCredentials:true});
+            const profileData = 
+            profilesRes.data[data.user.role.toLowerCase()] ||
+            profilesRes.data.user||
+            data.user;
+             setUser(profileData);
+          }
+        }
+      } catch (error) {
+        setIsAuth(false);
+        setUser({});
+        console.log("User not Logged in",error)
+      }finally{
+        setLoading(false);
+      }
+    };
+    fetchUserProfile()
+  },[setIsAuth]);
+  // Loading
+  if(loading){
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-2xl font-semibold text-blue-700">Loading........</p>
+      </div>
+    )
+  }
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -32,8 +80,8 @@ function App(){
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
-      <ToastContainer position="bottom-right"/>
-      <Footer/>
+      <ToastContainer position="bottom-right" />
+      <Footer />
     </div>
   );
 }

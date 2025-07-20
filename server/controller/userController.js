@@ -206,8 +206,15 @@ export const logInUseController = errorHandleMiddleware(
       if (!user) {
         return next(new ErrorHandler("Invalid Email or Password", 401));
       }
+      // Add debug logs here 📋
+      console.log("Submitted role:", role);
+      console.log("User role:", user.role);
+
       // Check Password in database and user password
       const passwordMatch = await user.comparePassword(password);
+      // More debug logs
+      console.log("Password matched?", passwordMatch);
+
       if (!passwordMatch) {
         return next(new ErrorHandler("Invalid Email or password", 403));
       }
@@ -359,70 +366,70 @@ export const getSingleAdmin = errorHandleMiddleware(async (req, res, next) => {
   }
 });
 // logout admin
-export const logOutAdmin = errorHandleMiddleware(async(req, res, next)=>{
+export const logOutAdmin = errorHandleMiddleware(async (req, res, next) => {
   res
-  .status(200)
-  .cookie("adminToken",null,{
-    httpOnly: true,
-    expires: new Date(Date.now()),
-   })
-   .send({
-    success: true,
-    message: ("Admin Logges Out successfully")
-   })
+    .status(200)
+    .cookie("adminToken", null, {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .send({
+      success: true,
+      message: "Admin Logges Out successfully",
+    });
 });
 // get admin profile
-export const getAdminProfile = errorHandleMiddleware(async(req, res, next)=>{
+export const getAdminProfile = errorHandleMiddleware(async (req, res, next) => {
   try {
-    const admin = await User.findById(req.user.id)
-    if(!admin || admin.role !== "Admin") {
-      return next (new ErrorHandler("Admin Not Found or Unauthorize",404))
+    const admin = await User.findById(req.user.id);
+    if (!admin || admin.role !== "Admin") {
+      return next(new ErrorHandler("Admin Not Found or Unauthorize", 404));
     }
     //if admin is found then respond
     res.status(200).json({
       success: true,
       message: "Admin Profile found Successfully",
       admin,
-    }) 
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
-      success: false, 
+      success: false,
       message: "Error in Admin profile",
-      error
-    })
+      error,
+    });
   }
 });
 // Get current user
-export const getCurrentUser = errorHandleMiddleware (async(req, res, next)=>{
+export const getCurrentUser = errorHandleMiddleware(async (req, res, next) => {
   try {
     res.status(200).json({
       success: true,
-      user: req.user
-    })
+      user: req.user,
+    });
   } catch (error) {
-    next(new ErrorHandler("Failed to get user information"))
+    next(new ErrorHandler("Failed to get user information"));
   }
 });
 // Get all users
-export const getAllUsers = errorHandleMiddleware (async (req, res, next)=>{
+export const getAllUsers = errorHandleMiddleware(async (req, res, next) => {
   try {
     const users = await User.find().select("-password");
-    if(users.length === 0){
-      return next(new ErrorHandler("User Not Foun"),404)
+    if (users.length === 0) {
+      return next(new ErrorHandler("User Not Foun"), 404);
     }
     // Send response upon find all the users
     res.status(200).json({
       success: true,
       message: "All User Fetched successfully",
       users,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
-      success:false,
+      success: false,
       message: "Error in fetching All users",
-      error
-    })
+      error,
+    });
   }
-})
+});
