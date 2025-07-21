@@ -38,13 +38,37 @@ const url = process.env.MONGO_URI_PRODUCTION;
 //     credentials: true,
 //   })
 // );
+// app.use(
+//   cors({
+//     origin: process.env.FRONTEND_URL, // your Vercel URL
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//     credentials: true, // allow cookies
+//   })
+// );
+const allowedOrigins = [
+  process.env.FRONTEND_URL,      // Vercel
+  process.env.DEV_FRONTEND_URL   // local dev
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // your Vercel URL
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true, // allow cookies
+    origin: (origin, callback) => {
+      // allow requests with no origin (mobile apps, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error("CORS policy: Origin not allowed"));
+    },
+    credentials: true,
+    methods: ["GET","POST","PUT","DELETE"],
+    allowedHeaders: ["Content-Type","Authorization","X-Requested-With"],
   })
 );
+
+// handle preflight (OPTIONS) requests for all routes
+app.options("*", cors());
+
 
 app.use(express.json());
 app.use(morgan("dev"));
