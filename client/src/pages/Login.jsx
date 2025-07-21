@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 //  import { Context } from "../main.jsx";
 import { Context } from "../Context.jsx";
 import axios from "axios";
+import API from "./api"
 import { toast } from 'react-toastify';
 import {
   FaEnvelope,
@@ -26,15 +27,19 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/v1/user/login-user",
+      const { data } = await API.post(
+        // "https://js-app-23pn.onrender.com/api/v1/user/login-user",
+         "/api/v1/user/login-user",
         { email, password, role },
-        { withCredentials: true }
+        // { withCredentials: true }
       );
       setIsAuth(true);
       setUser(data.user);
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+       if (rememberMe) {
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
       // response
       toast.success(data.message);
       navigate("/");
