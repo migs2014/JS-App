@@ -11,13 +11,13 @@ import fileUpload from "express-fileupload";
 import cookie from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
-import classRoutes from "./routes/classRoutes.js"
-import studentRoutes from "./routes/studentRoutes.js"
-import attendanceRoutes from "./routes/attendanceRoutes.js"
-import examRoutes from  "./routes/examRoutes.js"
-import feeRoutes from "./routes/feeRoutes.js"
-import resultRoutes from "./routes/resultRoutes.js"
-import subjectRoutes from "./routes/subjectRoutes.js"
+import classRoutes from "./routes/classRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import examRoutes from "./routes/examRoutes.js";
+import feeRoutes from "./routes/feeRoutes.js";
+import resultRoutes from "./routes/resultRoutes.js";
+import subjectRoutes from "./routes/subjectRoutes.js";
 // cloudinary set up
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,16 +28,24 @@ cloudinary.v2.config({
 const port = process.env.PORT || 6060;
 // const url = process.env.MONGO_URL;
 // URI FOR CLOUD
- const url = process.env.MONGO_URI_PRODUCTION;
+const url = process.env.MONGO_URI_PRODUCTION;
 
 //Middleware
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST", "DELETE"],
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "DELETE"],
-    credentials: true,
+    origin: process.env.FRONTEND_URL, // your Vercel URL
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true, // allow cookies
   })
 );
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookie());
@@ -60,12 +68,12 @@ mongoose
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/teacher", teacherRoutes);
 app.use("/api/v1/class", classRoutes);
-app.use("/api/v1/student",studentRoutes);
-app.use("/api/v1/attendance",attendanceRoutes);
-app.use("/api/v1/exam",examRoutes);
-app.use("/api/v1/fee",feeRoutes)
-app.use("/api/v1/result",resultRoutes)
-app.use("/api/v1/subject",subjectRoutes)
+app.use("/api/v1/student", studentRoutes);
+app.use("/api/v1/attendance", attendanceRoutes);
+app.use("/api/v1/exam", examRoutes);
+app.use("/api/v1/fee", feeRoutes);
+app.use("/api/v1/result", resultRoutes);
+app.use("/api/v1/subject", subjectRoutes);
 // Server listen
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
