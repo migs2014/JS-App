@@ -26,10 +26,8 @@ const userSchema = new mongoose.Schema({
         enum: ["Admin","Student","Teacher"]
      },
      avatar: {
-       public_id: String,
-       default: null,
-       url: String,
-       default: null
+       public_id: { type: String},
+       url: {type: String}
     },
      phone: {
         type: String,
