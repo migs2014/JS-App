@@ -52,6 +52,8 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || "https://js-app-sepia.vercel.app",
   process.env.DEV_FRONTEND_URL || "http://localhost:5173",
 ];
+console.log("👉 Allowed Origins:", allowedOrigins);
+
 // 2) Build the CORS options once
 const corsOptions = {
   origin: (origin, callback) => {
@@ -91,7 +93,6 @@ app.use(cors(corsOptions));
 // );
 
 // handle preflight (OPTIONS) requests for all routes
-app.options("/{*any}", cors());
 // app.options("*", cors());
 
 app.use(express.json());
