@@ -10,8 +10,9 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
-import API from "./api";
+// import axios from "axios";
+// import API from "./api";
+import API from "../api";
 
 const Register = () => {
   const [name, setName] = useState("");
