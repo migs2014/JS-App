@@ -18,34 +18,23 @@ import examRoutes from "./routes/examRoutes.js";
 import feeRoutes from "./routes/feeRoutes.js";
 import resultRoutes from "./routes/resultRoutes.js";
 import subjectRoutes from "./routes/subjectRoutes.js";
-// cloudinary set up
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
+
+// ——— Cloudinary Setup with Guard ———
+if (!process.env.CLOUDINARY_API_KEY) {
+  console.warn("⚠️  Missing CLOUDINARY_API_KEY, skipping uploads");
+} else {
+  cloudinary.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
+  });
+}
+
 //All port from dotenv
 const port = process.env.PORT || 6060;
 // const url = process.env.MONGO_URL;
 // URI FOR CLOUD
 const url = process.env.MONGO_URI_PRODUCTION;
-
-//Middleware
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     methods: ["GET", "POST", "DELETE"],
-//     credentials: true,
-//   })
-// );
-// app.use(
-//   cors({
-//     origin: process.env.FRONTEND_URL, // your Vercel URL
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//     credentials: true, // allow cookies
-//   })
-// );
-// server.js (near top)
 
 // 1) Fall-back to the literal URL if the env var is missing
 const allowedOrigins = [
@@ -75,26 +64,6 @@ const corsOptions = {
 
 // 3) Register it before all routes & handlers
 app.use(cors(corsOptions));
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       // allow requests with no origin (mobile apps, curl)
-//       if (!origin) return callback(null, true);
-//       if (allowedOrigins.includes(origin)) {
-//         return callback(null, true);
-//       }
-//       callback(new Error("CORS policy: Origin not allowed"));
-//     },
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-//   })
-// );
-
-// handle preflight (OPTIONS) requests for all routes
-// app.options("*", cors());
-
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookie());
