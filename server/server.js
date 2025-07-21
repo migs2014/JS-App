@@ -45,31 +45,54 @@ const url = process.env.MONGO_URI_PRODUCTION;
 //     credentials: true, // allow cookies
 //   })
 // );
-const allowedOrigins = [
-  process.env.FRONTEND_URL,      // Vercel
-  process.env.DEV_FRONTEND_URL   // local dev
-];
+// server.js (near top)
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // allow requests with no origin (mobile apps, curl)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      callback(new Error("CORS policy: Origin not allowed"));
-    },
-    credentials: true,
-    methods: ["GET","POST","PUT","DELETE"],
-    allowedHeaders: ["Content-Type","Authorization","X-Requested-With"],
-  })
-);
+// 1) Fall-back to the literal URL if the env var is missing
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "https://js-app-sepia.vercel.app",
+  process.env.DEV_FRONTEND_URL || "http://localhost:5173",
+];
+// 2) Build the CORS options once
+const corsOptions = {
+  origin: (origin, callback) => {
+    // allow requests with no origin (mobile, curl, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // only allow our two hosts
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // explicit “not allowed” response for all others
+    return callback(new Error("Not allowed by CORS"), false);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+};
+
+// 3) Register it before all routes & handlers
+app.use(cors(corsOptions));
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       // allow requests with no origin (mobile apps, curl)
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
+//       callback(new Error("CORS policy: Origin not allowed"));
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+//   })
+// );
 
 // handle preflight (OPTIONS) requests for all routes
 app.options("/{*any}", cors());
 // app.options("*", cors());
-
 
 app.use(express.json());
 app.use(morgan("dev"));
