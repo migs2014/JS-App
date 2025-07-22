@@ -139,52 +139,116 @@ function App() {
   const { setIsAuth, setUser } = useContext(Context);
   const [loading, setLoading] = useState(true);
 
-  // Fetch current user on mount
+  // // Fetch current user on mount
+  // useEffect(() => {
+  //   const fetchUserProfile = async () => {
+  //     try {
+  //       const { data } = await API.get("/api/v1/user/me");
+  //       if (data?.user) {
+  //         setIsAuth(true);
+  //         setUser(data.user);
+
+  //         // Determine profile URL by role
+  //         let profilePath;
+  //         switch (data.user.role) {
+  //           case "Student":
+  //             profilePath = "/api/v1/student/student-profile";
+  //             break;
+  //           case "Teacher":
+  //             profilePath = "/api/v1/teacher/teacher-profile";
+  //             break;
+  //           case "Admin":
+  //             profilePath = "/api/v1/user/admin-profile";
+  //             break;
+  //           default:
+  //             profilePath = null;
+  //         }
+
+  //         if (profilePath) {
+  //           const { data: profileData } = await API.get(profilePath);
+  //           // The response might nest data under a key matching the role
+  //           const payload =
+  //             profileData[data.user.role.toLowerCase()] ||
+  //             profileData.user ||
+  //             data.user;
+  //           setUser(payload);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log("User not logged in", error);
+  //       setIsAuth(false);
+  //       setUser({});
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchUserProfile();
+  // }, [setIsAuth, setUser]);
   useEffect(() => {
-    const fetchUserProfile = async () => {
+  const fetchUserProfile = async () => {
+    console.log("🚀 [fetchUserProfile] starting…");
+    let user;
+
+    // 1) Get the bare‐bones user object
+    try {
+      console.log("👉 GET /api/v1/user/me");
+      const response = await API.get("/api/v1/user/me");
+      console.log("👈 /user/me response.data:", response.data);
+      user = response.data.user;
+      setIsAuth(true);
+      setUser(user);
+    } catch (err) {
+      console.error("❌ Failed GET /user/me:", err);
+      setIsAuth(false);
+      setUser({});
+      setLoading(false);
+      return;            // bail out early if this fails
+    }
+
+    // 2) Depending on role, grab the full profile
+    let profilePath;
+    switch (user.role) {
+      case "Student":
+        profilePath = "/api/v1/student/student-profile";
+        break;
+      case "Teacher":
+        profilePath = "/api/v1/teacher/teacher-profile";
+        break;
+      case "Admin":
+        profilePath = "/api/v1/user/admin-profile";
+        break;
+      default:
+        console.warn("[fetchUserProfile] unknown role:", user.role);
+        profilePath = null;
+    }
+
+    if (profilePath) {
       try {
-        const { data } = await API.get("/api/v1/user/me");
-        if (data?.user) {
-          setIsAuth(true);
-          setUser(data.user);
+        console.log("👉 GET", profilePath);
+        const profileRes = await API.get(profilePath);
+        console.log(`👈 ${profilePath} response.data:`, profileRes.data);
 
-          // Determine profile URL by role
-          let profilePath;
-          switch (data.user.role) {
-            case "Student":
-              profilePath = "/api/v1/student/student-profile";
-              break;
-            case "Teacher":
-              profilePath = "/api/v1/teacher/teacher-profile";
-              break;
-            case "Admin":
-              profilePath = "/api/v1/user/admin-profile";
-              break;
-            default:
-              profilePath = null;
-          }
+        // pull out the nested object safely
+        const nestedKey = user.role.toLowerCase();
+        const fullProfile =
+          profileRes.data[nestedKey] ||
+          profileRes.data.user ||
+          user;
 
-          if (profilePath) {
-            const { data: profileData } = await API.get(profilePath);
-            // The response might nest data under a key matching the role
-            const payload =
-              profileData[data.user.role.toLowerCase()] ||
-              profileData.user ||
-              data.user;
-            setUser(payload);
-          }
-        }
-      } catch (error) {
-        console.log("User not logged in", error);
-        setIsAuth(false);
-        setUser({});
-      } finally {
-        setLoading(false);
+        console.log("🏷️ using payload:", fullProfile);
+        setUser(fullProfile);
+      } catch (err) {
+        console.error(`❌ Failed GET ${profilePath}:`, err);
       }
-    };
+    }
 
-    fetchUserProfile();
-  }, [setIsAuth, setUser]);
+    setLoading(false);
+    console.log("✅ [fetchUserProfile] done");
+  };
+
+  fetchUserProfile();
+}, []);   // notice we only run once on mount
 
   if (loading) {
     return (
