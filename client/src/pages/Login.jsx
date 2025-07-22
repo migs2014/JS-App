@@ -33,6 +33,7 @@ const Login = () => {
         { email, password, role }
         // { withCredentials: true }
       );
+      console.log("✅ LOGIN SUCCESS – data:", data);
       setIsAuth(true);
       setUser(data.user);
       if (rememberMe) {
@@ -53,7 +54,12 @@ const Login = () => {
       toast.success(data.message);
       navigate("/");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Login Failed");
+      console.error("❌ LOGIN FAILED – err.response:", err.response);
+      console.error("❌ LOGIN FAILED – err.request:", err.request);
+      console.error("❌ LOGIN FAILED – full err:", err);
+      toast.error(err.response?.data?.message || "Login Failed");
+
+      // toast.error(error?.response?.data?.message || "Login Failed");
     }
   };
 
