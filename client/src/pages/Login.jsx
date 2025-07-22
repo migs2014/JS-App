@@ -5,7 +5,7 @@ import { Context } from "../Context.jsx";
 // import axios from "axios";
 // import API from "./api";
 import API from "../api";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import {
   FaEnvelope,
   FaEye,
@@ -24,19 +24,18 @@ const Login = () => {
   // Accessing context api
   const { setIsAuth, setUser } = useContext(Context);
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const { data } = await API.post(
         // "https://js-app-23pn.onrender.com/api/v1/user/login-user",
-         "/api/v1/user/login-user",
+        "/api/v1/user/login-user",
         { email, password, role },
         // { withCredentials: true }
       );
       setIsAuth(true);
       setUser(data.user);
-       if (rememberMe) {
+      if (rememberMe) {
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
       }
