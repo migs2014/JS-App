@@ -30,7 +30,7 @@ const Login = () => {
       const { data } = await API.post(
         // "https://js-app-23pn.onrender.com/api/v1/user/login-user",
         "/api/v1/user/login-user",
-        { email, password, role },
+        { email, password, role }
         // { withCredentials: true }
       );
       setIsAuth(true);
@@ -41,6 +41,15 @@ const Login = () => {
       }
 
       // response
+      // inside your login route handler
+      if (!user || !(await user.comparePassword(password))) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid credentials" });
+      }
+
+      // this line sends headers + JSON exactly once
+      return jsontoken(user, "Login successful", 200, res);
       toast.success(data.message);
       navigate("/");
     } catch (error) {
@@ -114,7 +123,7 @@ const Login = () => {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                Rememeber Me
+                Remember Me
               </label>
             </div>
             {/* Login button */}
