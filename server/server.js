@@ -47,6 +47,9 @@ console.log("👉 Allowed Origins:", allowedOrigins);
 // 2) Build the CORS options once
 const corsOptions = {
   origin: (origin, callback) => {
+    // Log every incoming Origin header
+    console.log("↔️  Incoming Origin:", origin);
+
     // allow requests with no origin (mobile, curl, server-to-server)
     if (!origin) return callback(null, true);
 
