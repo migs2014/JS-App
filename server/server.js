@@ -86,16 +86,16 @@ mongoose
   })
   .catch((err) => console.log("Database error is", err));
 // cookie Behavior
-app.get("/test-cookie", (req, res) => {
-  console.log("↔️  TEST-COOKIE Origin:", req.get("origin"));
-  return res
-    .cookie("ping", "pong", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
-    })
-    .send("🍪 cookie set");
-});
+// app.get("/test-cookie", (req, res) => {
+//   console.log("↔️  TEST-COOKIE Origin:", req.get("origin"));
+//   return res
+//     .cookie("ping", "pong", {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
+//     })
+//     .send("🍪 cookie set");
+// });
   
 // Routes are here
 app.use("/api/v1/user", userRoutes);
