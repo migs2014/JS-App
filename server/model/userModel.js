@@ -67,23 +67,23 @@ userSchema.methods.comparePassword = async function (enterPassword) {
   return await bcrypt.compare(enterPassword, this.password);
 };
 //json web token generation
+
 userSchema.methods.generateJsonWebToken = function () {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error("Missing JWT_SECRET – cannot sign tokens");
   }
+  
+  // Fallback to "7d" if you didn’t set JWT_EXPIRES
+  const expiresIn = process.env.JWT_EXPIRES || "7d";
 
   return jwt.sign(
-    {
-      id: this._id,
-      role: this.role,
-    },
+    { id: this._id, role: this.role },
     secret,
-    {
-      expiresIn: process.env.JWT_EXPIRES || "7d",
-    }
+    { expiresIn }           // <- must be 'expiresIn', not 'expires'
   );
 };
+
 
 // userSchema.methods.generateJsonWebToken = function () {
 //  return jwt.sign({
