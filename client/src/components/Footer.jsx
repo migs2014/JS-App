@@ -67,6 +67,12 @@ function Footer() {
             </div>
           </div>
         </div>
+         <p className="text-center text-semibold">
+  <strong>
+    Designed and Built by Migele &copy; {new Date().getFullYear()}
+  </strong>
+</p>
+
       </footer>
     </div>
   );
