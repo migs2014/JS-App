@@ -50,7 +50,7 @@ const Login = () => {
       }
 
       // this line sends headers + JSON exactly once
-      return jsontoken(user, "Login successful", 200, res);
+      // return jsontoken(user, "Login successful", 200, res);
       toast.success(data.message);
       navigate("/");
     } catch (error) {

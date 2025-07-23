@@ -34,7 +34,7 @@
 //       token
 //     });
 // };
-
+import jsonwebtoken from "jsonwebtoken"
 export const jsontoken = (user, message, statusCode, res) => {
   if (!res) throw new Error("Response object is required");
 
