@@ -67,9 +67,9 @@ function Footer() {
             </div>
           </div>
         </div>
-         <p className="text-center text-semibold">
+         <p className="text-center text-semibold text-xl">
   <strong>
-    Designed and Built by Migele &copy; {new Date().getFullYear()}
+    Designed by Migele &copy; {new Date().getFullYear()}
   </strong>
 </p>
 

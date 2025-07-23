@@ -2,8 +2,6 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 //  import { Context } from "../main.jsx";
 import { Context } from "../Context.jsx";
-// import axios from "axios";
-// import API from "./api";
 import API from "../api";
 import { toast } from "react-toastify";
 import {
