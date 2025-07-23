@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../Context";
 import API from "../api";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -14,7 +15,7 @@ const Navbar = () => {
     { name: "Contact", href: "/contact" },
     { name: "Services", href: "/services" },
     // { name: "Policy", href: "/policy" },
-    { name: "Login", href: "/login" },
+    // { name: "Login", href: "/login" },
   ];
   // logOut user
   const logOutHandler = async () => {
@@ -22,21 +23,24 @@ const Navbar = () => {
       let logoutUrl = "";
       let tokenName = "";
       if (user?.role === "Student") {
-        logoutUrl("/api/v1/student/logOut-student");
-        tokenName("studentToken");
+        logoutUrl = "/api/v1/student/logOut-student";
+        tokenName = "studentToken";
       } else if (user?.role === "Teacher") {
-        logoutUrl("/api/v1/teacher/logOut-teacher");
-        tokenName("teacherToken");
+        logoutUrl = "/api/v1/teacher/logOut-teacher";
+        tokenName = "teacherToken";
       } else if (user?.role === "Admin") {
-        logoutUrl("/api/v1/user/logOut-admin");
-        tokenName("adminToken");
+        logoutUrl = "/api/v1/user/logOut-admin";
+        tokenName = "adminToken";
       }
       const res = await API.get(logoutUrl, {
-        withcCredentials: true,
+        withCredentials: true,
         Headers: {
           "Content-Type": "application/json",
         },
       });
+      // Show a notification on successful logout
+      toast.success(res.data.message || "Logged out successfully");
+      // Clear auth state and localStorage
       setIsAuth(false);
       setUser({});
       localStorage.removeItem(tokenName);
@@ -83,7 +87,10 @@ const Navbar = () => {
           <div>
             {isAuth ? (
               <div>
-                <button>
+                <button
+                  onClick={() => setProfileOpen((p) => !p)}
+                  className="relative"
+                >
                   {user?.avatar?.url ? (
                     <img
                       src={user.avatar.url}
@@ -94,8 +101,9 @@ const Navbar = () => {
                     <FaUserCircle className="text-3xl text-gray-600" />
                   )}
                 </button>
+                {/* Position it absolutely under the avatar */}
                 {profileOpen && (
-                  <div>
+                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md overflow-hidden z-50">
                     <Link
                       to="/dashboard"
                       className="block px-4 py-2 text-gray-700 hover:bg-blue-200"
@@ -136,30 +144,54 @@ const Navbar = () => {
               {/* Mobile Menu */}
               {menuOpen && (
                 <div className="md:hidden bg-white px-4 shadow-md space-y-4">
-                  {navLinks.map((link) => {
-                    <Link key={link.name}
+                  {/* {navLinks.map((link) => {
+                    <Link 
+                    key={link.name}
                      to={link.href} 
                      onClick={()=>setMenuOpen(false)}
                      className="block text-gray-700 hover:text-blue-600 font-medium"
                      >
                       {link.name}
                     </Link>
-                  })}
-                  {
-                    isAuth?(
-                      <>
-                      <Link to="/dashboard" onClick={()=>setMenuOpen(false)} className="block bg-green-600 text-white text-center py-2 rounded-md">Dashboard</Link>
-                      <button onClick={()=>{
-                        setMenuOpen(false)
-                        logOutHandler()
-                      }} 
-                      className="block bg-red-600 text-white w-full py-2 rounded-md"
-                      >Logout</button>
-                      </>
-                    ):(
-                      <Link  to={"/login"} onClick={()=>setMenuOpen(false)} className="block bg-blue-600 text-white text-center py-2 rounded-md">Login</Link>
-                    )
-                  }
+                  })} */}
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      to={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-gray-700 hover:text-blue-600 font-medium"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                  {isAuth ? (
+                    <>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setMenuOpen(false)}
+                        className="block bg-green-600 text-white text-center py-2 rounded-md"
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setMenuOpen(false);
+                          logOutHandler();
+                        }}
+                        className="block bg-red-600 text-white w-full py-2 rounded-md"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      to={"/login"}
+                      onClick={() => setMenuOpen(false)}
+                      className="block bg-blue-600 text-white text-center py-2 rounded-md"
+                    >
+                      Login
+                    </Link>
+                  )}
                 </div>
               )}
             </button>

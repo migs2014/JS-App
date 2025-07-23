@@ -18,7 +18,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import { ContextProvider } from "./Context.jsx"; // 👈 import the provider
-
+import "react-toastify/dist/ReactToastify.css";
 // Context api create
 export const Context = createContext();
 const Apps =() =>{
