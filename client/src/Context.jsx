@@ -7,11 +7,17 @@ export const Context = createContext();
 // Step 2: Create a provider component
 export function ContextProvider({ children }) {
   const [role, setRole] = useState("");
+  const [isAuth, setIsAuth]   = useState(false);
+  const [user, setUser]       = useState(null);
 
   const value = {
     role,
     setRole,
-    // Add more shared state or functions here if needed
+      isAuth,
+    setIsAuth,
+    user,
+    setUser,
+
   };
 
   return (

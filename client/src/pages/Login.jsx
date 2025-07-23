@@ -33,31 +33,22 @@ const Login = () => {
         { email, password, role }
         // { withCredentials: true }
       );
-      console.log("✅ LOGIN SUCCESS – data:", data);
+      // console.log("✅ LOGIN SUCCESS – data:", data);
       setIsAuth(true);
       setUser(data.user);
       if (rememberMe) {
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
       }
-
-      // response
-      // inside your login route handler
-      if (!user || !(await user.comparePassword(password))) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid credentials" });
-      }
-
       // this line sends headers + JSON exactly once
       // return jsontoken(user, "Login successful", 200, res);
       toast.success(data.message);
       navigate("/");
     } catch (error) {
-      console.error("❌ LOGIN FAILED – err.response:", err.response);
-      console.error("❌ LOGIN FAILED – err.request:", err.request);
-      console.error("❌ LOGIN FAILED – full err:", err);
-      toast.error(err.response?.data?.message || "Login Failed");
+      console.error("❌ LOGIN FAILED – err.response:", error.response);
+      console.error("❌ LOGIN FAILED – err.request:", error.request);
+      console.error("❌ LOGIN FAILED – full err:", error);
+      toast.error(error.response?.data?.message || "Login Failed");
 
       // toast.error(error?.response?.data?.message || "Login Failed");
     }
