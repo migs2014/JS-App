@@ -23,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Context } from "./Context.jsx";
 import API from "./api";   // your axios.create({ baseURL, withCredentials })
+import Dashboard from "./pages/Dashboard.jsx";
 
 function App() {
   const { setIsAuth, setUser } = useContext(Context);
@@ -103,6 +104,8 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        {/* <Route path ="/dashboard" element={<Dashboard/>}/>
+        <Route path ="/profile" element={<Profile/>}/> */}
       </Routes>
 
       <ToastContainer position="bottom-right" />
